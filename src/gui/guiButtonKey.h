@@ -42,6 +42,7 @@ public:
 	//! Called if an event happened
 	virtual bool OnEvent(const SEvent &event) override;
 
+private:
 	//! Start key capture
 	void startCapture()
 	{
@@ -56,22 +57,9 @@ public:
 		super::setText(wstrgettext(key_value.name()).c_str());
 	}
 
-	//! Check whether the field is capturing a key
-	bool isCapturing() const
-	{
-		return capturing;
-	}
-
 	//! Sets the captured key and stop capturing
 	void setKey(KeyPress key);
 
-	//! Gets the captured key
-	KeyPress getKey() const
-	{
-		return key_value;
-	}
-
-private:
 	void sendKey();
 
 	bool capturing = false;
