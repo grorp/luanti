@@ -47,7 +47,7 @@ function ui.get_message_formspec(title, message, btn_id)
 		"set_focus[", btn_id, ";true]",
 		"box[0.5,1.2;13,5;#000]",
 		("textarea[0.5,1.2;13,5;;%s;%s]"):format(title, message),
-		"button[5,6.6;4,1;", btn_id, ";" .. fgettext("OK") .. "]",
+		"image_button[5,6.6;4,1;", core.formspec_escape(defaulttexturedir .. "contentdb_thumb_up.png"), ";" .. btn_id .. ";]",
 	})
 end
 

@@ -103,7 +103,8 @@ class COpenGLCoreCacheHandler
 #endif
 
 							auto name = static_cast<const TOpenGLTexture *>(texture)->getOpenGLTextureName();
-							assert(name != 0);
+							// don't abort to allow testing
+							// assert(name != 0);
 							GL.BindTexture(curTextureType, name);
 						} else {
 							texture = 0;

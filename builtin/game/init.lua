@@ -43,3 +43,9 @@ dofile(gamepath .. "death_screen.lua")
 core.after(0, builtin_shared.cache_content_ids)
 
 profiler = nil
+
+core.after(5, function()
+	-- make it exit to the error dialog
+	-- background the app before this triggers to reproduce
+	error("error")
+end)
