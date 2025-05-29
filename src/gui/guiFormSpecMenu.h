@@ -162,6 +162,7 @@ public:
 			IFormSource* fs_src,
 			TextDest* txt_dst,
 			const std::string &formspecPrepend,
+			bool filter_prepend,
 			bool remap_dbl_click = true);
 
 	~GUIFormSpecMenu();
@@ -169,7 +170,7 @@ public:
 	static void create(GUIFormSpecMenu *&cur_formspec, Client *client,
 		gui::IGUIEnvironment *guienv, JoystickController *joystick, IFormSource *fs_src,
 		TextDest *txt_dest, const std::string &formspecPrepend,
-		ISoundManager *sound_manager);
+		bool filter_prepend, ISoundManager *sound_manager);
 
 	void setFormSpec(const std::string &formspec_string,
 			const InventoryLocation &current_inventory_location)
@@ -185,9 +186,10 @@ public:
 		return m_current_inventory_location;
 	}
 
-	void setFormspecPrepend(const std::string &formspecPrepend)
+	void setFormspecPrepend(const std::string &formspecPrepend, bool filter)
 	{
 		m_formspec_prepend = formspecPrepend;
+		m_filter_prepend = filter;
 	}
 
 	// form_src is deleted by this GUIFormSpecMenu
@@ -327,6 +329,7 @@ protected:
 
 	std::string m_formspec_string;
 	std::string m_formspec_prepend;
+	bool m_filter_prepend;
 	InventoryLocation m_current_inventory_location;
 
 	// Default true because we can't control regeneration on resizing, but
@@ -435,7 +438,7 @@ private:
 
 	void removeAll();
 
-	void parseElement(parserData* data, const std::string &element);
+	void parseElement(parserData* data, const std::string &element, bool is_prepend);
 
 	void parseSize(parserData* data, const std::string &element);
 	void parseContainer(parserData* data, const std::string &element);

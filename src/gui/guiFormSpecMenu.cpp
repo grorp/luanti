@@ -94,13 +94,15 @@ GUIFormSpecMenu::GUIFormSpecMenu(JoystickController *joystick,
 		gui::IGUIElement *parent, s32 id, IMenuManager *menumgr,
 		Client *client, gui::IGUIEnvironment *guienv, ISimpleTextureSource *tsrc,
 		ISoundManager *sound_manager, IFormSource *fsrc, TextDest *tdst,
-		const std::string &formspecPrepend, bool remap_dbl_click):
+		const std::string &formspecPrepend, bool filter_prepend,
+		bool remap_dbl_click):
 	GUIModalMenu(guienv, parent, id, menumgr, remap_dbl_click),
 	m_invmgr(client),
 	m_tsrc(tsrc),
 	m_sound_manager(sound_manager),
 	m_client(client),
 	m_formspec_prepend(formspecPrepend),
+	m_filter_prepend(filter_prepend),
 	m_form_src(fsrc),
 	m_text_dst(tdst),
 	m_joystick(joystick)
@@ -124,7 +126,8 @@ GUIFormSpecMenu::~GUIFormSpecMenu()
 
 void GUIFormSpecMenu::create(GUIFormSpecMenu *&cur_formspec, Client *client,
 	gui::IGUIEnvironment *guienv, JoystickController *joystick, IFormSource *fs_src,
-	TextDest *txt_dest, const std::string &formspecPrepend, ISoundManager *sound_manager)
+	TextDest *txt_dest, const std::string &formspecPrepend, bool filter_prepend,
+	ISoundManager *sound_manager)
 {
 	if (cur_formspec && cur_formspec->getReferenceCount() == 1) {
 		/*
@@ -142,7 +145,7 @@ void GUIFormSpecMenu::create(GUIFormSpecMenu *&cur_formspec, Client *client,
 	if (cur_formspec == nullptr) {
 		cur_formspec = new GUIFormSpecMenu(joystick, guiroot, -1, &g_menumgr,
 			client, guienv, client->getTextureSource(), sound_manager, fs_src,
-			txt_dest, formspecPrepend);
+			txt_dest, formspecPrepend, filter_prepend);
 
 		/*
 			Caution: do not call (*cur_formspec)->drop() here --
@@ -152,7 +155,7 @@ void GUIFormSpecMenu::create(GUIFormSpecMenu *&cur_formspec, Client *client,
 			and delete it in that case.
 		*/
 	} else {
-		cur_formspec->setFormspecPrepend(formspecPrepend);
+		cur_formspec->setFormspecPrepend(formspecPrepend, filter_prepend);
 		cur_formspec->setFormSource(fs_src);
 		cur_formspec->setTextDest(txt_dest);
 	}
@@ -2945,7 +2948,8 @@ const std::unordered_map<std::string, std::function<void(GUIFormSpecMenu*, GUIFo
 };
 
 
-void GUIFormSpecMenu::parseElement(parserData* data, const std::string &element)
+void GUIFormSpecMenu::parseElement(parserData* data, const std::string &element,
+		bool is_prepend)
 {
 	//some prechecks
 	if (element.empty())
@@ -2963,6 +2967,17 @@ void GUIFormSpecMenu::parseElement(parserData* data, const std::string &element)
 
 	// They remain here due to bool flags, for now
 	data->type = type;
+
+	if (is_prepend &&
+			type != "bgcolor" && type != "background" && type != "background9" &&
+			type != "style" && type != "style_type") {
+
+		warningstream << "Disallowed '" << type << "' element in formspec prepend, "
+				<< "this is deprecated" << (m_filter_prepend ? " and will be ignored" : "") << "." << std::endl;
+
+		if (m_filter_prepend)
+			return;
+	}
 
 	auto it = element_parsers.find(type);
 	if (it != element_parsers.end()) {
@@ -3247,7 +3262,7 @@ void GUIFormSpecMenu::regenerateGui(v2u32 screensize)
 
 		std::vector<std::string> prepend_elements = split(m_formspec_prepend, ']');
 		for (const auto &element : prepend_elements)
-			parseElement(&mydata, element);
+			parseElement(&mydata, element, true);
 
 		// legacy sorting for formspec versions < 3
 		if (m_formspec_version >= 3)
@@ -3262,7 +3277,7 @@ void GUIFormSpecMenu::regenerateGui(v2u32 screensize)
 	}
 
 	for (; i< elements.size(); i++) {
-		parseElement(&mydata, elements[i]);
+		parseElement(&mydata, elements[i], false);
 	}
 
 	if (mydata.current_parent != this) {

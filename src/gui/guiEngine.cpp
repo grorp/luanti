@@ -418,7 +418,7 @@ void GUIEngine::drawClouds(float dtime)
 void GUIEngine::setFormspecPrepend(const std::string &fs)
 {
 	if (m_menu) {
-		m_menu->setFormspecPrepend(fs);
+		m_menu->setFormspecPrepend(fs, false);
 	}
 }
 
