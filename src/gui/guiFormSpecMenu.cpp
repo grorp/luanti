@@ -3994,8 +3994,7 @@ bool GUIFormSpecMenu::preprocessEvent(const SEvent& event)
 			KeyPress kp(event.KeyInput);
 		if (kp == EscapeKey
 				|| kp == getKeySetting("keymap_inventory")
-				|| event.KeyInput.Key==KEY_RETURN
-				|| (event.KeyInput.Key==KEY_TAB && event.KeyInput.Control)) {
+				|| event.KeyInput.Key==KEY_RETURN) {
 			gui::IGUIElement *focused = Environment->getFocus();
 			if (focused && isMyChild(focused) &&
 					(focused->getType() == gui::EGUIET_LIST_BOX ||
