@@ -3,6 +3,7 @@
 // Copyright (C) 2013 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 
+#include <csignal>
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>
@@ -4082,6 +4083,7 @@ bool GUIFormSpecMenu::OnEvent(const SEvent& event)
 				// Shift: Previous tab, No shift: Next tab
 				active = (active + (shift ? -1 : 1) + num_tabs) % num_tabs;
 				tabs->setActiveTab(active);
+				std::raise(SIGINT);
 				return true; // handled
 			}
 		}
