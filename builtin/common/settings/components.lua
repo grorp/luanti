@@ -431,15 +431,19 @@ local function make_noise_params(setting)
 end
 
 function make.key(setting)
+	-- This is a modifier, not a keybinding on its own
+	local EXCLUDED = "keymap_close_world"
+
 	local btn_bind = "bind_" .. setting.name
 	local btn_clear = "unbind_" .. setting.name
 	local function add_conflict_warnings(fs, height)
 		local value = core.settings:get(setting.name)
-		if value == "" then
+		if setting.name == EXCLUDED or value == "" then
 			return height
 		end
 		for _, o in ipairs(core.full_settingtypes) do
-			if o.type == "key" and o.name ~= setting.name and core.are_keycodes_equal(core.settings:get(o.name), value) then
+			if o.type == "key" and o.name ~= setting.name and o.name ~= EXCLUDED and
+					core.are_keycodes_equal(core.settings:get(o.name), value) then
 				table.insert(fs, ("label[0,%f;%s]"):format(height + 0.3,
 						core.colorize(mt_color_orange, fgettext([[Conflicts with "$1"]], fgettext(o.readable_name)))))
 				height = height + 0.6

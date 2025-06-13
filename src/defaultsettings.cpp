@@ -134,7 +134,6 @@ void set_default_settings()
 #else
 #define USEKEY2(name, _, value) settings->setDefault(name, value)
 #endif
-	USEKEY2("keymap_close_world", "SYSTEM_SCANCODE_224", "KEY_KEY_CTRL");
 	USEKEY2("keymap_forward", "SYSTEM_SCANCODE_26", "KEY_KEY_W");
 	settings->setDefault("keymap_autoforward", "");
 	USEKEY2("keymap_backward", "SYSTEM_SCANCODE_22", "KEY_KEY_S");
@@ -188,6 +187,7 @@ void set_default_settings()
 	USEKEY2("keymap_fullscreen", "SYSTEM_SCANCODE_68", "KEY_F11");
 	USEKEY2("keymap_increase_viewing_range_min", "SYSTEM_SCANCODE_46", "+");
 	USEKEY2("keymap_decrease_viewing_range_min", "SYSTEM_SCANCODE_45", "-");
+	USEKEY2("keymap_close_world", "SYSTEM_SCANCODE_224", "KEY_KEY_CTRL");
 	USEKEY2("keymap_slot1", "SYSTEM_SCANCODE_30", "KEY_KEY_1");
 	USEKEY2("keymap_slot2", "SYSTEM_SCANCODE_31", "KEY_KEY_2");
 	USEKEY2("keymap_slot3", "SYSTEM_SCANCODE_32", "KEY_KEY_3");
