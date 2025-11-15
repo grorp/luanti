@@ -572,5 +572,42 @@ function settingtypes.parse_config_file(read_all, parse_mods)
 		end
 	end
 
+	-- Add a "reverse lookup" for requirements to the settings data
+
+	local setting_lookup = {}
+
+	local function get_or_insert(name)
+		local existing = setting_lookup[name]
+		if existing then
+			return existing
+		end
+
+		setting_lookup[name] = {
+			required_by = {},
+		}
+		return setting_lookup[name]
+	end
+
+	for i, entry in ipairs(settings) do
+		if entry.type ~= "category" then
+			get_or_insert(entry.name).index = i
+
+			if entry.requires then
+				for required_name in pairs(entry.requires) do
+					table.insert(get_or_insert(required_name).required_by, entry.name)
+				end
+			end
+		end
+	end
+
+
+	for _, data in pairs(setting_lookup) do
+		-- if `not data.index`: a setting of this name was required somewhere,
+		-- but it doesn't exist (could be a "special" requirement).
+		if data.index then
+			settings[data.index].required_by = data.required_by
+		end
+	end
+
 	return settings
 end

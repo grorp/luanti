@@ -269,6 +269,13 @@ local function get_setting_match_weight(entry, query_keywords)
 		end
 	end
 
+	if entry.required_by then
+		for _, requiree_name in ipairs(entry.required_by) do
+			local requiree = get_setting_info(requiree_name)
+			setting_score = setting_score + 0.5 * get_setting_match_weight(requiree, query_keywords)
+		end
+	end
+
 	return setting_score
 end
 
